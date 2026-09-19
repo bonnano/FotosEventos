@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: eventos-backend
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: GOOGLE_DRIVE_AUTH_MODE
+        value: service_account
+      - key: GOOGLE_SERVICE_ACCOUNT_FILE
+        value: /etc/secrets/service-account.json
+      - key: GOOGLE_DRIVE_FOLDER_ID
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false

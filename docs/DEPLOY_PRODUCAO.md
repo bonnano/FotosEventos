@@ -18,6 +18,77 @@ Instruções para implantar a aplicação em produção (cloud ou servidor próp
 
 ---
 
+## ☁️ Deploy do Backend no Render
+
+O repositório já inclui o arquivo `render.yaml` e o Dockerfile do backend. O
+Render pode criar o serviço automaticamente a partir do Blueprint.
+
+### 1. Preparar o Google Drive
+
+1. Use uma Service Account para o ambiente de produção.
+2. Compartilhe a pasta do Google Drive com o e-mail da Service Account, com
+   permissão de editor.
+3. Mantenha o arquivo JSON da Service Account fora do Git.
+
+### 2. Criar o serviço
+
+No Render, selecione **New > Blueprint** e escolha este repositório. O Render
+vai usar o `render.yaml` e criar um Web Service Docker com health check em
+`/health`.
+
+Se criar o serviço manualmente, use:
+
+| Configuração | Valor |
+|---|---|
+| Root Directory | `backend` |
+| Environment | `Docker` |
+| Dockerfile Path | `./Dockerfile` |
+| Health Check Path | `/health` |
+
+Não fixe a porta no painel. O backend já lê a variável `PORT` fornecida pelo
+Render.
+
+### 3. Adicionar o Secret File
+
+No serviço, abra **Environment > Secret Files** e crie:
+
+| Filename | Conteúdo |
+|---|---|
+| `service-account.json` | conteúdo integral do JSON da Service Account |
+
+Configure também estas variáveis de ambiente:
+
+```env
+GOOGLE_DRIVE_AUTH_MODE=service_account
+GOOGLE_SERVICE_ACCOUNT_FILE=/etc/secrets/service-account.json
+GOOGLE_DRIVE_FOLDER_ID=ID_DA_PASTA_DO_GOOGLE_DRIVE
+ALLOWED_ORIGINS=https://SEU-FRONTEND.onrender.com
+```
+
+Para mais de uma origem, separe os endereços por vírgula. Inclua `http://localhost`
+apenas durante testes locais.
+
+### 4. Validar o deploy
+
+Depois do deploy, acesse:
+
+```text
+https://SEU_BACKEND.onrender.com/health
+```
+
+A resposta esperada é um JSON com `"status": "ok"`. Use essa URL como
+`BACKEND_URL` ao compilar o Flutter Web:
+
+```bash
+flutter build web --release \
+  --dart-define=BACKEND_URL=https://SEU_BACKEND.onrender.com
+```
+
+O plano gratuito do Render pode suspender o serviço após inatividade; a
+primeira requisição depois disso pode demorar alguns segundos.
+
+---
+
 ## 🔐 Segurança em Produção
 
 ### Variáveis de Ambiente
