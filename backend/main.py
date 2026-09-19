@@ -121,13 +121,32 @@ class GoogleDriveManager:
     )
 
     @staticmethod
+    def _resolver_arquivo(arquivo: str) -> str:
+        """Resolve arquivos locais ou Secret Files montados pelo Render."""
+        caminho = Path(arquivo)
+        if caminho.exists():
+            return str(caminho)
+
+        caminho_secreto = Path('/etc/secrets') / caminho.name
+        if caminho_secreto.exists():
+            return str(caminho_secreto)
+
+        return str(caminho)
+
+    @staticmethod
     def _obter_credenciais_oauth():
         """Carrega ou cria as credenciais OAuth da conta Google do proprietário."""
         credenciais = None
+        caminho_token = GoogleDriveManager._resolver_arquivo(
+            GoogleDriveManager.OAUTH_TOKEN_FILE
+        )
+        caminho_cliente = GoogleDriveManager._resolver_arquivo(
+            GoogleDriveManager.OAUTH_CLIENT_FILE
+        )
 
-        if os.path.exists(GoogleDriveManager.OAUTH_TOKEN_FILE):
+        if os.path.exists(caminho_token):
             credenciais = OAuthCredentials.from_authorized_user_file(
-                GoogleDriveManager.OAUTH_TOKEN_FILE,
+                caminho_token,
                 GoogleDriveManager.SCOPES
             )
 
@@ -137,10 +156,11 @@ class GoogleDriveManager:
         if credenciais and credenciais.expired and credenciais.refresh_token:
             credenciais.refresh(Request())
         else:
-            if not os.path.exists(GoogleDriveManager.OAUTH_CLIENT_FILE):
+            if not os.path.exists(caminho_cliente):
                 erro = (
                     'Arquivo OAuth não encontrado: '
-                    f'{GoogleDriveManager.OAUTH_CLIENT_FILE}. '
+                    f'{GoogleDriveManager.OAUTH_CLIENT_FILE} ou '
+                    f'/etc/secrets/{Path(GoogleDriveManager.OAUTH_CLIENT_FILE).name}. '
                     'Baixe um cliente OAuth do tipo aplicativo para computador '
                     'e configure GOOGLE_OAUTH_CLIENT_FILE.'
                 )
@@ -148,7 +168,7 @@ class GoogleDriveManager:
                 raise FileNotFoundError(erro)
 
             fluxo = InstalledAppFlow.from_client_secrets_file(
-                GoogleDriveManager.OAUTH_CLIENT_FILE,
+                caminho_cliente,
                 GoogleDriveManager.SCOPES
             )
             credenciais = fluxo.run_local_server(port=0)
@@ -175,13 +195,20 @@ class GoogleDriveManager:
                 credenciais = GoogleDriveManager._obter_credenciais_oauth()
                 logger.info("Autenticação OAuth do usuário realizada com sucesso")
             else:
-                if not os.path.exists(GoogleDriveManager.SERVICE_ACCOUNT_FILE):
-                    erro = f"Arquivo de Service Account não encontrado: {GoogleDriveManager.SERVICE_ACCOUNT_FILE}"
+                caminho_service_account = GoogleDriveManager._resolver_arquivo(
+                    GoogleDriveManager.SERVICE_ACCOUNT_FILE
+                )
+                if not os.path.exists(caminho_service_account):
+                    erro = (
+                        'Arquivo de Service Account não encontrado: '
+                        f'{GoogleDriveManager.SERVICE_ACCOUNT_FILE} ou '
+                        f'/etc/secrets/{Path(GoogleDriveManager.SERVICE_ACCOUNT_FILE).name}'
+                    )
                     logger.error(erro)
                     raise FileNotFoundError(erro)
 
                 credenciais = Credentials.from_service_account_file(
-                    GoogleDriveManager.SERVICE_ACCOUNT_FILE,
+                    caminho_service_account,
                     scopes=GoogleDriveManager.SCOPES
                 )
                 credenciais.refresh(Request())

@@ -133,7 +133,7 @@ class _CapturaFotosPageState extends State<CapturaFotosPage> {
       
       const String backendUrl = String.fromEnvironment(
         'BACKEND_URL',
-        defaultValue: 'http://localhost:8000',
+        defaultValue: 'https://eventos-backend-32ds.onrender.com',
       );
       final Uri urlBackend = Uri.parse('$backendUrl/upload-foto');
       

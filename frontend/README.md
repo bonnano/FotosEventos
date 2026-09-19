@@ -72,15 +72,27 @@ flutter run -d chrome
 
 ### URL do Backend
 
-Edite em `lib/main.dart`:
+O frontend usa a variável de compilação `BACKEND_URL`. O padrão já está configurado
+para o backend publicado:
 
 ```dart
-const String urlBackend = 'http://localhost:8000/upload-foto';
+https://eventos-backend-32ds.onrender.com/upload-foto
 ```
 
 **Exemplos:**
 - Desenvolvimento: `http://localhost:8000/upload-foto`
-- Produção: `https://api.meuapp.com/upload-foto`
+- Produção: `https://eventos-backend-32ds.onrender.com/upload-foto`
+
+Para sobrescrever a URL durante a execução ou o build:
+
+```bash
+flutter run -d chrome --dart-define=BACKEND_URL=http://localhost:8000
+flutter build web --release --dart-define=BACKEND_URL=https://eventos-backend-32ds.onrender.com
+```
+
+O domínio publicado do frontend também precisa estar cadastrado na variável
+`ALLOWED_ORIGINS` do serviço do backend no Render. Informe apenas a origem, sem
+`/upload-foto`, por exemplo: `https://seu-frontend.onrender.com`.
 
 ### Permissões
 
