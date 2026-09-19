@@ -1,0 +1,104 @@
+# Docker
+**/.docker/
+docker-compose.override.yml
+docker-compose.*.local.yml
+*.tar
+*.tar.gz
+
+# Credenciais e certificados
+*.pem
+*.key
+*.p12
+
+# Arquivos temporários de ferramentas
+.dockerignore.bak
+# Frontend (Flutter)
+frontend/build/
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/pubspec.lock
+frontend/.packages
+frontend/.plugin_symlinks/
+frontend/windows/flutter/generated_plugins.cmake
+frontend/windows/flutter/generated_plugin_symlink_setup.cmake
+frontend/windows/flutter/flutter_windows.dll
+frontend/windows/flutter/flutter_windows_plugins.cmake
+
+# Backend (Python)
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+backend/.Python
+backend/build/
+backend/develop-eggs/
+backend/dist/
+backend/downloads/
+backend/eggs/
+backend/.eggs/
+backend/lib/
+backend/lib64/
+backend/parts/
+backend/sdist/
+backend/var/
+backend/wheels/
+backend/pip-wheel-metadata/
+backend/share/python-wheels/
+backend/*.egg-info/
+backend/.installed.cfg
+backend/*.egg
+backend/MANIFEST
+backend/env/
+backend/venv/
+backend/.env
+backend/.venv
+backend/ENV/
+backend/env.bak/
+backend/venv.bak/
+backend/service-account.json
+backend/service-account*.json
+backend/oauth-client.json
+backend/oauth-token.json
+backend/temp_uploads/
+backend/uploads/
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+backend/*.log
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+
+# Logs
+*.log
+logs/
+
+# Configurações locais
+.env
+.env.local
+.env.*.local
+
+# Sistema operacional
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Documentação gerada
+docs/.build/
+docs/_build/
+
+# Misc
+.cache/
+.python-version
+*.bak
+*.tmp
