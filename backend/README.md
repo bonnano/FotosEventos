@@ -82,6 +82,27 @@ ALLOWED_ORIGINS=http://localhost:3000,https://meuapp.com
 
 Veja [CONFIGURACAO_GOOGLE_DRIVE.md](../docs/CONFIGURACAO_GOOGLE_DRIVE.md)
 
+### Deploy no Render
+
+No Render, os Secret Files ficam montados em `/etc/secrets/`. O backend procura
+automaticamente cada arquivo primeiro no caminho configurado ou no diretório
+local e, se não encontrar, em `/etc/secrets/` usando o nome do arquivo.
+
+Para produção com Service Account, configure:
+
+```env
+GOOGLE_DRIVE_AUTH_MODE=service_account
+GOOGLE_SERVICE_ACCOUNT_FILE=/etc/secrets/service-account.json
+```
+
+Também é possível deixar `GOOGLE_SERVICE_ACCOUNT_FILE=service-account.json`,
+pois o fallback para `/etc/secrets/service-account.json` será aplicado.
+
+O modo OAuth com `run_local_server` é destinado ao desenvolvimento local. Se
+for usado no Render, o `oauth-client.json` e um `oauth-token.json` válido devem
+ser adicionados como Secret Files; o primeiro login OAuth não deve ser feito no
+servidor web.
+
 ---
 
 ## 🔌 API Endpoints
