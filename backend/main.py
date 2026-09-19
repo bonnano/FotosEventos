@@ -58,6 +58,7 @@ ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",          # Localhost
     "http://127.0.0.1:5000",          # Localhost
     "http://127.0.0.1:8080",          # Localhost
+    "https://bonnano.github.io",      # Frontend publicado no GitHub Pages
     "https://meuapp.com",             # Domínio de produção (ALTERAR)
     "https://www.meuapp.com",         # WWW (ALTERAR)
     "http://localhost:port",          # Substitua 'port' pelo número da porta se necessário
